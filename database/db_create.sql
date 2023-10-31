@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS Student (
     age INT NOT NULL,
     university_name VARCHAR(255) NOT NULL,
     degree VARCHAR(255) NOT NULL,
-    gpa DECIMAL(3, 2) NOT NULL,
-    grad_date DATE NOT NULL,
+    gpa DECIMAL(5, 2) NOT NULL,
+    grad_date INT NOT NULL,
     pwd VARCHAR(20) NOT NULL,
     PRIMARY KEY (student_id)
 );
