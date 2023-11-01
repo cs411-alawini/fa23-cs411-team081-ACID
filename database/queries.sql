@@ -125,6 +125,33 @@ WHERE
             O.student_id = "1"
     );
 
+/* Average Salary for every job title */
+SELECT
+    J.job_title,
+    AVG(J.salary)
+from
+    Job_Role J
+GROUP BY
+    J.job_title;
+
+/* Average Salary for every job title and university name*/
+SELECT
+    J.job_title,
+    St.university_name,
+    AVG(J.salary) as avg_salary
+from
+    Job_Role J
+    JOIN Applies A ON A.job_id = J.job_id
+    JOIN Student St ON A.student_id = St.student_id
+WHERE
+    A.status = 'Accepted'
+GROUP BY
+    J.job_title,
+    St.university_name
+ORDER BY
+    avg_salary DESC;
+
+/* Which skillset has the highest avg salary */
 /* List all job postings -- searching filtering etc */
 /* List all student who have applied for a job role. */
 /* STAGE -4 CRUD OPERATIONS*/
