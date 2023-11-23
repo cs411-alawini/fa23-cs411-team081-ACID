@@ -10,7 +10,7 @@ function JobOpeningsPage() {
 	};
 
 	return (
-		<div className="bg-white flex flex-col items-center justify-center min-h-screen min-w-full">
+		<div className="bg-white flex flex-col items-center justify-start min-h-screen min-w-full">
 			<div className="bg-violet-900 flex flex-col items-center justify-center min-w-full space-y-4 p-4">
 				<div className="text-white font-bold text-2xl">
 					Active Job Openings
