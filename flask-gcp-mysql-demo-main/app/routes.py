@@ -3,13 +3,13 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 
-@app.route("/delete/<int:task_id>", methods=['POST'])
-def delete(task_id):
+@app.route("/delete/<int:job_id>", methods=['POST'])
+def delete(job_id):
     """ recieved post requests for entry delete """
 
     try:
-        db_helper.remove_task_by_id(task_id)
-        result = {'success': True, 'response': 'Removed task'}
+        db_helper.remove_task_by_id(job_id)
+        result = {'success': True, 'response': 'Removed job_role'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
 
@@ -41,7 +41,7 @@ def update(task_id):
 def create():
     """ recieves post requests to add new task """
     data = request.get_json()
-    db_helper.insert_new_task(11111, data['description'], 123456, 'San Francisco', 'Full Time')
+    db_helper.insert_new_task(11112, data['description'], 123456, 'San Francisco', 'Full Time')
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
@@ -49,5 +49,6 @@ def create():
 @app.route("/")
 def homepage():
     """ returns rendered homepage """
-    items = db_helper.fetch_todo()
+    data = request.get_json()
+    items = db_helper.fetch_todo(data["company_id"])
     return render_template("index.html", items=items)

@@ -1,7 +1,7 @@
 """Defines all the functions related to the database"""
 from app import db
 
-def fetch_todo() -> dict:
+def fetch_todo(company_id: int) -> dict:
     """Reads all tasks listed in the todo table
 
     Returns:
@@ -9,7 +9,7 @@ def fetch_todo() -> dict:
     """
 
     conn = db.connect()
-    query_results = conn.execute("Select * from Job_Role where company_id=1;").fetchall()
+    query_results = conn.execute("Select * from Job_Role where company_id={};".format(company_id)).fetchall()
     conn.close()
     roles = []
     for result in query_results:
@@ -80,9 +80,9 @@ def insert_new_task(id: int, title: str, salary: int, location: str, type: str) 
     return task_id
 
 
-def remove_task_by_id(task_id: int) -> None:
+def remove_task_by_id(job_id: int) -> None:
     """ remove entries based on task ID """
     conn = db.connect()
-    query = 'Delete From tasks where id={};'.format(task_id)
+    query = 'Delete From Job_Role where job_id={};'.format(job_id)
     conn.execute(query)
     conn.close()
