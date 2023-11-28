@@ -120,7 +120,7 @@ def fetch_job_openings_by_name(company_name: str) -> dict:
 
 def fetch_jobs_applied(student_id: int) -> dict:
     conn = db.connect()
-    query = "select c.*, d.company_name from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={};".format(student_id)
+    query = "select c.*, d.company_name, b.status from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={};".format(student_id)
     query_results = conn.execute(query).fetchall()
     conn.close()
     for result in query_results:
