@@ -128,3 +128,26 @@ def fetch_jobs_applied(student_id: int) -> dict:
     
     item = [dict(zip(columns, row)) for row in query_results]
     return item
+
+def apply(student_id: int, job_id: int) -> None:
+    conn = db.connect()
+    query = 'Insert Into Applies VALUES ("{}", "{}", "{}");'.format("Pending", student_id, job_id)
+    conn.execute(query)
+    conn.close()
+
+def fetch_company_applications(company_id: int) -> dict:
+    conn = db.connect()
+    query = "select c.*, b.*, a.status from Applies a join Job_Role b on a.job_id = b.job_id join Student c on a.student_id = c.student_id where company_id={};".format(company_id)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    for result in query_results:
+        columns = result.keys()
+    
+    item = [dict(zip(columns, row)) for row in query_results]
+    return item
+
+def decide(student_id: int, job_id: int, status: str) -> None:
+    conn = db.connect()
+    query = "update Applies set Status='{}' where job_id={} and student_id={};".format(status, job_id, student_id)
+    conn.execute(query)
+    conn.close()
