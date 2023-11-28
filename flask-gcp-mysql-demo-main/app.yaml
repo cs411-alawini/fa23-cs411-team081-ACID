@@ -1,0 +1,21 @@
+runtime: python38 # or another supported version
+
+instance_class: F1
+
+env_variables:
+  MYSQL_USER: "root" # please put in your credentials
+  MYSQL_PASSWORD: "cs411" # please put in your credentials
+  MYSQL_DB: "hireit" # please put in your credentials
+  MYSQL_HOST: "35.239.129.150" # please put in your credentials
+  MYSQL_PORT: "3306"
+
+handlers:
+# Matches requests to /images/... to files in static/images/...
+- url: /img
+  static_dir: static/img
+
+- url: /script
+  static_dir: static/script
+
+- url: /styles
+  static_dir: static/styles

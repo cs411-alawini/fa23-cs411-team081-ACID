@@ -2,8 +2,8 @@
 .vscode
 .venv
 
-# sensitive
-app.yaml
+# # sensitive
+# app.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
