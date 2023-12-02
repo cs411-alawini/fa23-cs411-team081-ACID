@@ -1,6 +1,44 @@
 """Defines all the functions related to the database"""
 from app import db
 
+def student_login(student_id: int, pwd: str) -> dict:
+
+    conn = db.connect()
+    query_results = conn.execute("""Select * from Student where student_id="{}" and pwd="{}";""".format(student_id, pwd)).fetchall()
+    conn.close()
+    print(query_results)
+    if len(query_results) == 0:
+        status = False
+    else:
+        status =  True
+
+    item = {
+        "status": status,
+        "id": student_id,
+        "userType": "student"
+    }
+    return item
+
+def recruiter_login(recruiter_id: int, pwd: str) -> dict:
+
+    conn = db.connect()
+    query_results = conn.execute("""Select * from Recruiter where recruiter_id="{}" and pwd="{}";""".format(recruiter_id, pwd)).fetchall()
+    conn.close()
+    
+    if len(query_results) == 0:
+        status = False
+    else:
+        status =  True
+        
+    item = {
+        "status": status,
+        "id": recruiter_id,
+        "userType": "recruiter"
+    }
+
+    return item
+
+
 def fetch_job_postings(company_id: int) -> dict:
 
     conn = db.connect()
