@@ -15,6 +15,7 @@ import HomePage from './components/HomePage/HomePage';
 import RecruiterLogin from './components/RecruiterLogin/RecruiterLogin';
 import StudentLogin from './components/StudentLogin/StudentLogin';
 import JobOpeningsPage from './components/JobOpeningsPage/JobOpeningsPage';
+import CreateJobs from './components/CreateJobs/CreateJobs'
 
 function App() {
   return (
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/jobOpenings",
     element: <JobOpeningsPage />,
+  },
+  {
+    path: "/createJobs",
+    element: <CreateJobs />,
   },
 ]);
 
