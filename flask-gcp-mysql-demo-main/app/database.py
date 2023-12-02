@@ -74,20 +74,15 @@ def delete_job_posting(job_id: int) -> None:
     conn.execute(query)
     conn.close()
 
-def fetch_job_openings() -> dict:
+def fetch_job_openings(student_id: int) -> dict:
     conn = db.connect()
-    query_results = conn.execute("Select * from Job_Role;").fetchall()
+    query = '''SELECT a.*, b.company_name, c.student_id,
+           CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
+    FROM Job_Role a
+    LEFT JOIN Company b ON a.company_id = b.company_id
+    LEFT JOIN Applies c ON a.job_id = c.job_id'''
+    query_results = conn.execute(query, student_id=student_id, default_status="NA").fetchall()
     conn.close()
-    # roles = []
-    # for result in query_results:
-    #     item = {
-    #         "id": result[0],
-    #         "title": result[1],
-    #         "salary": result[2],
-    #         "location": result[3],
-    #         "job_type": result[4]
-    #     }
-    #     roles.append(item)
 
     # return roles
     for result in query_results:
@@ -96,10 +91,15 @@ def fetch_job_openings() -> dict:
     item = [dict(zip(columns, row)) for row in query_results]
     return item
 
-def fetch_job_openings_by_name(company_name: str) -> dict:
+def fetch_job_openings_by_name(student_id: int, company_name: str) -> dict:
     conn = db.connect()
-    query = 'SELECT * FROM Job_Role a join Company b on a.company_id = b.company_id where b.company_name like "{}";'.format(company_name)
-    query_results = conn.execute(query).fetchall()
+    query = '''SELECT a.*, b.company_name, c.student_id,
+           CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
+    FROM Job_Role a
+    LEFT JOIN Company b ON a.company_id = b.company_id
+    LEFT JOIN Applies c ON a.job_id = c.job_id
+    where b.company_name = %(company_name)s'''
+    query_results = conn.execute(query, student_id=student_id, default_status="NA", company_name=company_name).fetchall()
     conn.close()
     roles = []
     # for result in query_results:

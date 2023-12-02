@@ -15,28 +15,6 @@ def delete_job_posting(job_id):
 
     return jsonify(result)
 
-
-# @app.route("/edit/<int:task_id>", methods=['POST'])
-# def update(task_id):
-#     """ recieved post requests for entry updates """
-
-#     data = request.get_json()
-
-#     try:
-#         if "status" in data:
-#             db_helper.update_status_entry(task_id, data["status"])
-#             result = {'success': True, 'response': 'Status Updated'}
-#         elif "description" in data:
-#             db_helper.update_task_entry(task_id, data["description"])
-#             result = {'success': True, 'response': 'Task Updated'}
-#         else:
-#             result = {'success': True, 'response': 'Nothing Updated'}
-#     except:
-#         result = {'success': False, 'response': 'Something went wrong'}
-
-#     return jsonify(result)
-
-
 @app.route("/company/create", methods=['POST'])
 def post_job():
     """ recieves post requests to add new task """
@@ -67,15 +45,14 @@ def decide():
 
 @app.route("/student/job_openings")
 def fetch_job_openings():
-    """ returns available job openings """
-    result = db_helper.fetch_job_openings()
+    data = request.get_json()
+    result = db_helper.fetch_job_openings(data["student_id"])
     return result
 
 @app.route("/student/job_openings_by_name")
 def fetch_job_openings_by_name():
-    """ returns available job openings """
     data = request.get_json()
-    result = db_helper.fetch_job_openings_by_name(data["company_name"])
+    result = db_helper.fetch_job_openings_by_name(data["student_id"],data["company_name"])
     return result
 
 @app.route("/student/applied")
