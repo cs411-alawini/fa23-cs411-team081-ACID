@@ -23,13 +23,19 @@ def post_job():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
-
 @app.route("/company/postings")
 def fetch_job_postings():
     data = request.get_json()
     items = db_helper.fetch_job_postings(data["company_id"])
     return render_template("index.html", items=items)
 
+@app.route("/recruiter/login", methods=['POST'])
+def recruiter_login():
+    """ returns login status """
+    data = request.get_json()
+    obj = db_helper.recruiter_login(data["recruiter_id"], data["pwd"])
+    return obj
+    
 @app.route("/company/view_applications")
 def fetch_company_applications():
     data = request.get_json()
@@ -59,7 +65,15 @@ def fetch_job_openings_by_name():
 def fetch_jobs_applied():
     data = request.get_json()
     result = db_helper.fetch_jobs_applied(data["student_id"])
-    return result
+    return results
+
+@app.route("/student/login",  methods=['POST'])
+def student_login():
+    """ returns login status """
+    data = request.get_json()
+    obj = db_helper.student_login(data["student_id"], data["pwd"])
+    return jsonify(obj)
+
 
 @app.route("/student/apply", methods=['POST'])
 def apply():
