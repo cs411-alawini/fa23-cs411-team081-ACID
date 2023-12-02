@@ -92,11 +92,11 @@ def fetch_job_postings(company_id: int) -> dict:
 #     conn.close()
 
 
-def post_job(id: int, title: str, salary: int, location: str, type: str, company_id: int) ->  int:
+def post_job(title: str, salary: int, location: str, type: str, company_id: int) ->  int:
     
     conn = db.connect()
-    query = 'Insert Into Job_Role VALUES ("{}", "{}", "{}", "{}", "{}", "{}");'.format(
-        id, title, salary, location, type, company_id)
+    query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
+        title, salary, location, type, company_id)
     conn.execute(query)
     query_results = conn.execute("Select LAST_INSERT_ID();")
     query_results = [x for x in query_results]
@@ -158,7 +158,7 @@ def fetch_job_openings_by_name(company_name: str) -> dict:
 
 def fetch_jobs_applied(student_id: int) -> dict:
     conn = db.connect()
-    query = "select c.*, d.company_name from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={};".format(student_id)
+    query = "select c.*, d.company_name, b.status from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={};".format(student_id)
     query_results = conn.execute(query).fetchall()
     conn.close()
     for result in query_results:
@@ -166,3 +166,26 @@ def fetch_jobs_applied(student_id: int) -> dict:
     
     item = [dict(zip(columns, row)) for row in query_results]
     return item
+
+def apply(student_id: int, job_id: int) -> None:
+    conn = db.connect()
+    query = 'Insert Into Applies VALUES ("{}", "{}", "{}");'.format("Pending", student_id, job_id)
+    conn.execute(query)
+    conn.close()
+
+def fetch_company_applications(company_id: int) -> dict:
+    conn = db.connect()
+    query = "select c.*, b.*, a.status from Applies a join Job_Role b on a.job_id = b.job_id join Student c on a.student_id = c.student_id where company_id={};".format(company_id)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    for result in query_results:
+        columns = result.keys()
+    
+    item = [dict(zip(columns, row)) for row in query_results]
+    return item
+
+def decide(student_id: int, job_id: int, status: str) -> None:
+    conn = db.connect()
+    query = "update Applies set Status='{}' where job_id={} and student_id={};".format(status, job_id, student_id)
+    conn.execute(query)
+    conn.close()
