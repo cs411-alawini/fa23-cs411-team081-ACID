@@ -2,39 +2,41 @@ import React, { useState } from "react";
 import "./CreateJobs.css"; 
 
 const CreateJobs = () => {
-  const [desc, setDesc] = useState("");
-  const [exp, setExp] = useState("");
-  const [profile, setProfile] = useState("");
-  const [techs, setTechs] = useState("");
+  const [jobtitle, setRole] = useState("");
+  const [sal, setSal] = useState("");
+  const [loc, setLoc] = useState("");
+  const [type, setType] = useState("");
+  const [skills, setSkills] = useState("");
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const newJob = {
-      // id: Math.random().toString(),
-      desc: desc,
-      exp: parseInt(exp),
-      profile: profile,
-      techs: techs.split(",").map((tech) => tech.trim()),
-    };
-    console.log(newJob);
+    // e.preventDefault();
+    // const newJob = {
+    //   // id: Math.random().toString(),
+    //   desc: desc,
+    //   exp: parseInt(exp),
+    //   profile: profile,
+    //   techs: techs.split(",").map((tech) => tech.trim()),
+    // };
+    // console.log(newJob);
 
-    fetch(`${process.env.REACT_APP_URL}/post`, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newJob),
-    })
-      .then((v) => {
-        v.json();
-      })
-      .then((v) => console.log("Success:", v));
+    // fetch(`${process.env.REACT_APP_URL}/post`, {
+    //   method: "POST", // or 'PUT'
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(newJob),
+    // })
+    //   .then((v) => {
+    //     v.json();
+    //   })
+    //   .then((v) => console.log("Success:", v));
 
     // Clear input fields after submission
-    setDesc("");
-    setExp("");
-    setProfile("");
-    setTechs("");
+    setRole("");
+    setSal("");
+    setLoc("");
+    setType("");
+    setSkills("");
   };
 
   return (
@@ -51,29 +53,36 @@ const CreateJobs = () => {
           <input
             type="text"
             placeholder="Job Title"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
+            value={jobtitle}
+            onChange={(e) => setRole(e.target.value)}
             required
           />
           <input
             type="number"
             placeholder="Salary"
-            value={exp}
-            onChange={(e) => setExp(e.target.value)}
+            value={sal}
+            onChange={(e) => setSal(e.target.value)}
             required
           />
           <input
             type="text"
             placeholder="Location"
-            value={profile}
-            onChange={(e) => setProfile(e.target.value)}
+            value={loc}
+            onChange={(e) => setLoc(e.target.value)}
             required
           />
           <input
             type="text"
             placeholder="Job Type"
-            value={techs}
-            onChange={(e) => setTechs(e.target.value)}
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Skills (comma separated)"
+            value={skills}
+            onChange={(e) => setType(e.target.value)}
             required
           />
          <button
