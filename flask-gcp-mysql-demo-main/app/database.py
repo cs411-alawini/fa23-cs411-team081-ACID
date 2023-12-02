@@ -54,11 +54,11 @@ def fetch_job_postings(company_id: int) -> dict:
 #     conn.close()
 
 
-def post_job(id: int, title: str, salary: int, location: str, type: str, company_id: int) ->  int:
+def post_job(title: str, salary: int, location: str, type: str, company_id: int) ->  int:
     
     conn = db.connect()
-    query = 'Insert Into Job_Role VALUES ("{}", "{}", "{}", "{}", "{}", "{}");'.format(
-        id, title, salary, location, type, company_id)
+    query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
+        title, salary, location, type, company_id)
     conn.execute(query)
     query_results = conn.execute("Select LAST_INSERT_ID();")
     query_results = [x for x in query_results]

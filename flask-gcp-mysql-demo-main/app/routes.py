@@ -41,7 +41,7 @@ def delete_job_posting(job_id):
 def post_job():
     """ recieves post requests to add new task """
     data = request.get_json()
-    db_helper.post_job(data['job_id'], data['job_title'], data['salary'], data['location'], data['job_type'], data['company_id'])
+    db_helper.post_job(data['job_title'], data['salary'], data['location'], data['job_type'], data['company_id'])
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
