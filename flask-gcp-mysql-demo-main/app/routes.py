@@ -5,8 +5,6 @@ from app import database as db_helper
 
 @app.route("/company/delete/<int:job_id>", methods=['POST'])
 def delete_job_posting(job_id):
-    """ recieved post requests for entry delete """
-
     try:
         db_helper.delete_job_posting(job_id)
         result = {'success': True, 'response': 'Removed job_role'}
@@ -19,8 +17,11 @@ def delete_job_posting(job_id):
 def post_job():
     """ recieves post requests to add new task """
     data = request.get_json()
-    db_helper.post_job(data['job_title'], data['salary'], data['location'], data['job_type'], data['company_id'])
-    result = {'success': True, 'response': 'Done'}
+    try:
+        db_helper.post_job(data['job_title'], data['salary'], data['location'], data['job_type'], data['company_id'], data["skill_names"])
+        result = {'success': True, 'response': 'Done'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
 @app.route("/company/postings")
@@ -33,51 +34,86 @@ def fetch_job_postings():
 def recruiter_login():
     """ returns login status """
     data = request.get_json()
-    obj = db_helper.recruiter_login(data["recruiter_id"], data["pwd"])
-    return obj
+    try:
+        result = db_helper.recruiter_login(data["recruiter_id"], data["pwd"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return result
     
 @app.route("/company/view_applications")
 def fetch_company_applications():
     data = request.get_json()
-    result = db_helper.fetch_company_applications(data["company_id"])
+    try:
+        result = db_helper.fetch_company_applications(data["company_id"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return result
 
 @app.route("/company/decide", methods=['POST'])
 def decide():
     data = request.get_json()
-    db_helper.decide(data["student_id"], data["job_id"], data["status"])
-    result = {'success': True, 'response': 'Status updated'}
+    try:
+        db_helper.decide(data["student_id"], data["job_id"], data["status"])
+        result = {'success': True, 'response': 'Status updated'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
 @app.route("/student/job_openings")
 def fetch_job_openings():
     data = request.get_json()
-    result = db_helper.fetch_job_openings(data["student_id"])
+    try:
+        result = db_helper.fetch_job_openings(data["student_id"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return result
 
 @app.route("/student/job_openings_by_name")
 def fetch_job_openings_by_name():
     data = request.get_json()
-    result = db_helper.fetch_job_openings_by_name(data["student_id"],data["company_name"])
+    try:
+        result = db_helper.fetch_job_openings_by_name(data["student_id"],data["company_name"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return result
 
 @app.route("/student/applied")
 def fetch_jobs_applied():
     data = request.get_json()
-    result = db_helper.fetch_jobs_applied(data["student_id"])
-    return results
+    try:
+        result = db_helper.fetch_jobs_applied(data["student_id"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return result
 
 @app.route("/student/login",  methods=['POST'])
 def student_login():
     """ returns login status """
     data = request.get_json()
-    obj = db_helper.student_login(data["student_id"], data["pwd"])
-    return jsonify(obj)
+    try:
+        result = db_helper.student_login(data["student_id"], data["pwd"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
 
 
 @app.route("/student/apply", methods=['POST'])
 def apply():
     data = request.get_json()
-    db_helper.apply(data["student_id"], data["job_id"])
-    result = {'success': True, 'response': 'Application added'}
+    try:
+        db_helper.apply(data["student_id"], data["job_id"])
+        result = {'success': True, 'response': 'Application added'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
+
+
+@app.route("/company/close", methods=['POST'])
+def close_job():
+    data = request.get_json()
+    try:
+        db_helper.close_job(data["job_id"])
+        result = {'success': True, 'response': 'Job posting closed'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)

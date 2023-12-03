@@ -92,18 +92,53 @@ def fetch_job_postings(company_id: int) -> dict:
 #     conn.close()
 
 
-def post_job(title: str, salary: int, location: str, type: str, company_id: int) ->  int:
+def post_job(title: str, salary: int, location: str, type: str, company_id: int, skill_names: []) ->  None:
     
-    conn = db.connect()
-    query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
-        title, salary, location, type, company_id)
-    conn.execute(query)
-    query_results = conn.execute("Select LAST_INSERT_ID();")
-    query_results = [x for x in query_results]
-    task_id = query_results[0][0]
-    conn.close()
+    # conn = db.connect()
+    # query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
+    #     title, salary, location, type, company_id)
+    # conn.execute(query)
+    # query_results = conn.execute("Select LAST_INSERT_ID();")
+    # query_results = [x for x in query_results]
+    # task_id = query_results[0][0]
+    # conn.close()
 
-    return task_id
+    # return task_id
+
+    try:
+        conn = db.connect()
+        cursor = conn.connection.cursor()    
+
+        cursor.execute("SELECT MAX(job_id) FROM Job_Role;")   
+        job_id = cursor.fetchone()[0] + 1 
+
+        query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s);'
+        values = (job_id, title, salary, location, type, company_id)
+
+        conn.execute(query, values)
+
+        # Fetch skill IDs for the given skill names
+        skill_ids = []
+        for skill_name in skill_names:
+            cursor.execute("SELECT skill_id FROM Skill WHERE skill_name = %s limit 1", (skill_name,))
+            result = cursor.fetchone()
+            if result:
+                skill_ids.append(result[0])
+        
+        print(skill_ids)
+
+        # Insert into Requires table
+        for skill_id in skill_ids:
+            print(job_id)
+            print(skill_id)
+            
+            query = 'INSERT INTO Requires (job_id, skill_id) VALUES (%s, %s);'
+            values = (job_id, skill_id)
+            conn.execute(query, values)
+
+    finally:
+        cursor.close()
+        conn.close()
 
 
 def delete_job_posting(job_id: int) -> None:
@@ -187,5 +222,11 @@ def fetch_company_applications(company_id: int) -> dict:
 def decide(student_id: int, job_id: int, status: str) -> None:
     conn = db.connect()
     query = "update Applies set Status='{}' where job_id={} and student_id={};".format(status, job_id, student_id)
+    conn.execute(query)
+    conn.close()
+
+def close_job(job_id):
+    conn = db.connect()
+    query = "update Job_Role set job_status = 'Closed' where job_id = {};".format(job_id)
     conn.execute(query)
     conn.close()
