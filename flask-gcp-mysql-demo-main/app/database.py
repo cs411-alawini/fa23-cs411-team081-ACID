@@ -27,13 +27,16 @@ def recruiter_login(recruiter_id: int, pwd: str) -> dict:
     
     if len(query_results) == 0:
         status = False
+        company_id = -1
     else:
         status =  True
+        company_id = query_results[0][5]
         
     item = {
         "status": status,
         "id": recruiter_id,
-        "userType": "recruiter"
+        "userType": "recruiter",
+        "company_id": company_id
     }
 
     return item
@@ -147,16 +150,18 @@ def delete_job_posting(job_id: int) -> None:
     conn.execute(query)
     conn.close()
 
-def fetch_job_openings(student_id: int) -> dict:
+def fetch_job_openings(student_id: int, count: int) -> dict:
     conn = db.connect()
     query = '''SELECT a.*, b.company_name, c.student_id,
            CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
     FROM Job_Role a
     LEFT JOIN Company b ON a.company_id = b.company_id
-    LEFT JOIN Applies c ON a.job_id = c.job_id'''
+    LEFT JOIN Applies c ON a.job_id = c.job_id
+    ORDER BY a.job_id
+    LIMIT 10 OFFSET {};
+    '''.format(count)
     query_results = conn.execute(query, student_id=student_id, default_status="NA").fetchall()
     conn.close()
-
     # return roles
     for result in query_results:
         columns = result.keys()
@@ -191,9 +196,9 @@ def fetch_job_openings_by_name(student_id: int, company_name: str) -> dict:
     item = [dict(zip(columns, row)) for row in query_results]
     return item
 
-def fetch_jobs_applied(student_id: int) -> dict:
+def fetch_jobs_applied(student_id: int, count: int) -> dict:
     conn = db.connect()
-    query = "select c.*, d.company_name, b.status from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={};".format(student_id)
+    query = "select c.*, d.company_name, b.status from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={} LIMIT 10 OFFSET {};".format(student_id, count)
     query_results = conn.execute(query).fetchall()
     conn.close()
     for result in query_results:
@@ -208,9 +213,9 @@ def apply(student_id: int, job_id: int) -> None:
     conn.execute(query)
     conn.close()
 
-def fetch_company_applications(company_id: int) -> dict:
+def fetch_company_applications(company_id: int, count: int) -> dict:
     conn = db.connect()
-    query = "select c.*, b.*, a.status from Applies a join Job_Role b on a.job_id = b.job_id join Student c on a.student_id = c.student_id where company_id={};".format(company_id)
+    query = "select c.*, b.*, a.status from Applies a join Job_Role b on a.job_id = b.job_id join Student c on a.student_id = c.student_id where company_id={}  LIMIT 10 OFFSET {};".format(company_id, count)
     query_results = conn.execute(query).fetchall()
     conn.close()
     for result in query_results:
