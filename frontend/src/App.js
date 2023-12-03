@@ -15,8 +15,10 @@ import HomePage from "./components/HomePage/HomePage";
 import RecruiterLogin from "./components/RecruiterLogin/RecruiterLogin";
 import StudentLogin from "./components/StudentLogin/StudentLogin";
 import JobOpeningsPage from "./components/JobOpeningsPage/JobOpeningsPage";
+import JobApplicationsPage from "./components/JobApplicationsPage/JobApplicationsPage";
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
+import CompanyApplicantsPage from "./components/CompanyApplicantsPage copy/CompanyApplicantsPage";
 
 export const Auth = createContext();
 export const SetAuth = createContext();
@@ -24,11 +26,14 @@ export const UserId = createContext();
 export const SetUserId = createContext();
 export const UserType = createContext();
 export const SetUserType = createContext();
+export const CompanyId = createContext();
+export const SetCompanyId = createContext();
 
 toast.configure();
 function App() {
 	const [auth, setauth] = useState(false);
-	const [userId, setUserId] = useState();
+	const [userId, setUserId] = useState(-1);
+	const [companyId, setCompanyId] = useState(-1);
 	const [userType, setUserType] = useState("");
 	return (
 		<>
@@ -36,11 +41,17 @@ function App() {
 				<SetAuth.Provider value={setauth}>
 					<UserId.Provider value={userId}>
 						<SetUserId.Provider value={setUserId}>
-							<UserType.Provider value={userType}>
-								<SetUserType.Provider value={setUserType}>
-									<RouterProvider router={router} />
-								</SetUserType.Provider>
-							</UserType.Provider>
+							<CompanyId.Provider value={companyId}>
+								<SetCompanyId.Provider value={setCompanyId}>
+									<UserType.Provider value={userType}>
+										<SetUserType.Provider
+											value={setUserType}
+										>
+											<RouterProvider router={router} />
+										</SetUserType.Provider>
+									</UserType.Provider>
+								</SetCompanyId.Provider>
+							</CompanyId.Provider>
 						</SetUserId.Provider>
 					</UserId.Provider>
 				</SetAuth.Provider>
@@ -65,6 +76,14 @@ const router = createBrowserRouter([
 	{
 		path: "/jobOpenings",
 		element: <JobOpeningsPage />,
+	},
+	{
+		path: "/jobApplications",
+		element: <JobApplicationsPage />,
+	},
+	{
+		path: "/companyApplicants",
+		element: <CompanyApplicantsPage />,
 	},
 ]);
 

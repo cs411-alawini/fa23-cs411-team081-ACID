@@ -40,11 +40,11 @@ def recruiter_login():
         result = {'success': False, 'response': 'Something went wrong'}
     return result
     
-@app.route("/company/view_applications")
+@app.route("/company/view_applications", methods=['POST'])
 def fetch_company_applications():
     data = request.get_json()
     try:
-        result = db_helper.fetch_company_applications(data["company_id"])
+        result = db_helper.fetch_company_applications(data["company_id"], data["count"])
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return result
@@ -59,16 +59,16 @@ def decide():
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
-@app.route("/student/job_openings")
+@app.route("/student/job_openings", methods=['POST'])
 def fetch_job_openings():
     data = request.get_json()
     try:
-        result = db_helper.fetch_job_openings(data["student_id"])
+        result = db_helper.fetch_job_openings(data["student_id"], data["count"])
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return result
 
-@app.route("/student/job_openings_by_name")
+@app.route("/student/job_openings_by_name", methods=['POST'])
 def fetch_job_openings_by_name():
     data = request.get_json()
     try:
@@ -77,11 +77,11 @@ def fetch_job_openings_by_name():
         result = {'success': False, 'response': 'Something went wrong'}
     return result
 
-@app.route("/student/applied")
+@app.route("/student/applied", methods=['POST'])
 def fetch_jobs_applied():
     data = request.get_json()
     try:
-        result = db_helper.fetch_jobs_applied(data["student_id"])
+        result = db_helper.fetch_jobs_applied(data["student_id"], data["count"])
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return result

@@ -8,6 +8,8 @@ import {
 	SetUserId,
 	UserType,
 	SetUserType,
+	SetCompanyId,
+	CompanyId,
 } from "../../App";
 import { apiStudentLogin, apiRecruiterLogin, api } from "../../api/api";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,6 +21,8 @@ const LoginForm = ({ props }) => {
 	const _SetUserId = useContext(SetUserId);
 	const _UserType = useContext(UserType);
 	const _SetUserType = useContext(SetUserType);
+	const _CompanyId = useContext(CompanyId);
+	const _SetCompanyId = useContext(SetCompanyId);
 
 	const [username, setUsername] = useState(0);
 	const [password, setPassword] = useState("");
@@ -39,7 +43,7 @@ const LoginForm = ({ props }) => {
 				pwd: password,
 			});
 		}
-		console.log("Boom", response);
+		// console.log("Boom", response);
 		if (response.status === true) {
 			// let obj = {
 			// 	user_id: response.id,
@@ -57,7 +61,8 @@ const LoginForm = ({ props }) => {
 			if (response.userType === "student") {
 				navigate("/jobOpenings");
 			} else {
-				navigate("/jobOpenings");
+				_SetCompanyId(response.company_id);
+				navigate("/companyApplicants");
 			}
 		} else {
 			toast.error("Login Failed", {

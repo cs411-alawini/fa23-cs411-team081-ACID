@@ -6,28 +6,37 @@ import {
 	SetUserId,
 	UserType,
 	SetUserType,
+	CompanyId,
 } from "../../App";
 import JobCard from "../JobCard/JobCard";
-import { apiStudentAllJobPostings, apiStudentFetchByName } from "../../api/api";
+import {
+	apiCompanyApplicants,
+	apiStudentAllJobPostings,
+	apiStudentFetchByName,
+} from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import ApplicantCard from "../ApplicantCard/ApplicantCard";
 
-function JobOpeningsPage() {
+function CompanyApplicantsPage() {
 	const _UserId = useContext(UserId);
+	const _CompanyId = useContext(CompanyId);
 	const auth = useContext(Auth);
 	const _SetAuth = useContext(SetAuth);
 	const _UserType = useContext(UserType);
 	const [response, setResponse] = useState([]);
 	const [count, setCount] = useState(0);
 	console.log("UserId", _UserId);
+	console.log("companyId", _CompanyId);
 
 	const [searchInput, setSearchInput] = useState("");
 
-	const fetchJobOpenings = async (e) => {
-		const response = await apiStudentAllJobPostings({
-			student_id: _UserId,
+	const fetchApplicants = async (e) => {
+		const response = await apiCompanyApplicants({
+			company_id: _CompanyId,
 			count: count,
 		});
 		setResponse(response);
+		console.log("Fetching", response);
 	};
 
 	const IncrementCount = () => {
@@ -44,7 +53,7 @@ function JobOpeningsPage() {
 		if (auth === false) {
 			navigate("/");
 		}
-		fetchJobOpenings();
+		fetchApplicants();
 	}, [count]);
 
 	const handleChange = (e) => {
@@ -65,27 +74,27 @@ function JobOpeningsPage() {
 		navigate("/jobApplications");
 	};
 
-	const handleSearch = async (e) => {
-		const response = await apiStudentFetchByName({
-			company_name: searchInput,
-			student_id: _UserId,
-		});
-		setResponse(response);
-	};
+	// const handleSearch = async (e) => {
+	// 	const response = await apiStudentFetchByName({
+	// 		company_name: searchInput,
+	// 		student_id: _UserId,
+	// 	});
+	// 	setResponse(response);
+	// };
 
 	const handleRemoveFilter = () => {
 		setSearchInput("");
 		setCount(0);
-		fetchJobOpenings();
+		fetchApplicants();
 	};
 
 	return (
 		<div className="bg-white flex flex-col items-center justify-start min-h-screen min-w-full">
 			<div className="bg-violet-900 flex flex-col items-center justify-center min-w-full space-y-4 p-4">
 				<div className="text-white font-bold text-2xl">
-					Active Job Openings
+					All Applicants
 				</div>
-				<div>
+				{/* <div>
 					<input
 						className="rounded- w-96"
 						type="text"
@@ -108,13 +117,13 @@ function JobOpeningsPage() {
 							Remove Filter
 						</button>
 					)}
-				</div>
+				</div> */}
 				<div>
 					<button
 						onClick={handleApplicationsClick}
 						className="border-2 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
 					>
-						Applications
+						Create Job
 					</button>
 					<button
 						onClick={handleLogOut}
@@ -128,7 +137,10 @@ function JobOpeningsPage() {
 			<div className="flex flex-col p-4 items-center justify-center min-w-full">
 				<Suspense fallback={<div>Loading...</div>}>
 					{response.map((item, index) => (
-						<JobCard key={index + 1} props={item}></JobCard>
+						<ApplicantCard
+							key={index + 1}
+							props={item}
+						></ApplicantCard>
 					))}
 				</Suspense>
 				{searchInput === "" && (
@@ -152,4 +164,4 @@ function JobOpeningsPage() {
 	);
 }
 
-export default JobOpeningsPage;
+export default CompanyApplicantsPage;
