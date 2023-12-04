@@ -1,6 +1,47 @@
 """Defines all the functions related to the database"""
 from app import db
 
+def student_login(student_id: int, pwd: str) -> dict:
+
+    conn = db.connect()
+    query_results = conn.execute("""Select * from Student where student_id="{}" and pwd="{}";""".format(student_id, pwd)).fetchall()
+    conn.close()
+    print(query_results)
+    if len(query_results) == 0:
+        status = False
+    else:
+        status =  True
+
+    item = {
+        "status": status,
+        "id": student_id,
+        "userType": "student"
+    }
+    return item
+
+def recruiter_login(recruiter_id: int, pwd: str) -> dict:
+
+    conn = db.connect()
+    query_results = conn.execute("""Select * from Recruiter where recruiter_id="{}" and pwd="{}";""".format(recruiter_id, pwd)).fetchall()
+    conn.close()
+    
+    if len(query_results) == 0:
+        status = False
+        company_id = -1
+    else:
+        status =  True
+        company_id = query_results[0][5]
+        
+    item = {
+        "status": status,
+        "id": recruiter_id,
+        "userType": "recruiter",
+        "company_id": company_id
+    }
+
+    return item
+
+
 def fetch_job_postings(company_id: int) -> dict:
 
     conn = db.connect()
@@ -54,18 +95,53 @@ def fetch_job_postings(company_id: int) -> dict:
 #     conn.close()
 
 
-def post_job(id: int, title: str, salary: int, location: str, type: str, company_id: int) ->  int:
+def post_job(title: str, salary: int, location: str, type: str, company_id: int, skill_names: []) ->  None:
     
-    conn = db.connect()
-    query = 'Insert Into Job_Role VALUES ("{}", "{}", "{}", "{}", "{}", "{}");'.format(
-        id, title, salary, location, type, company_id)
-    conn.execute(query)
-    query_results = conn.execute("Select LAST_INSERT_ID();")
-    query_results = [x for x in query_results]
-    task_id = query_results[0][0]
-    conn.close()
+    # conn = db.connect()
+    # query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
+    #     title, salary, location, type, company_id)
+    # conn.execute(query)
+    # query_results = conn.execute("Select LAST_INSERT_ID();")
+    # query_results = [x for x in query_results]
+    # task_id = query_results[0][0]
+    # conn.close()
 
-    return task_id
+    # return task_id
+
+    try:
+        conn = db.connect()
+        cursor = conn.connection.cursor()    
+
+        cursor.execute("SELECT MAX(job_id) FROM Job_Role;")   
+        job_id = cursor.fetchone()[0] + 1 
+
+        query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s);'
+        values = (job_id, title, salary, location, type, company_id)
+
+        conn.execute(query, values)
+
+        # Fetch skill IDs for the given skill names
+        skill_ids = []
+        for skill_name in skill_names:
+            cursor.execute("SELECT skill_id FROM Skill WHERE skill_name = %s limit 1", (skill_name,))
+            result = cursor.fetchone()
+            if result:
+                skill_ids.append(result[0])
+        
+        print(skill_ids)
+
+        # Insert into Requires table
+        for skill_id in skill_ids:
+            print(job_id)
+            print(skill_id)
+            
+            query = 'INSERT INTO Requires (job_id, skill_id) VALUES (%s, %s);'
+            values = (job_id, skill_id)
+            conn.execute(query, values)
+
+    finally:
+        cursor.close()
+        conn.close()
 
 
 def delete_job_posting(job_id: int) -> None:
@@ -74,21 +150,18 @@ def delete_job_posting(job_id: int) -> None:
     conn.execute(query)
     conn.close()
 
-def fetch_job_openings() -> dict:
+def fetch_job_openings(student_id: int, count: int) -> dict:
     conn = db.connect()
-    query_results = conn.execute("Select * from Job_Role;").fetchall()
+    query = '''SELECT a.*, b.company_name, c.student_id,
+           CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
+    FROM Job_Role a
+    LEFT JOIN Company b ON a.company_id = b.company_id
+    LEFT JOIN Applies c ON a.job_id = c.job_id
+    ORDER BY a.job_id
+    LIMIT 10 OFFSET {};
+    '''.format(count)
+    query_results = conn.execute(query, student_id=student_id, default_status="NA").fetchall()
     conn.close()
-    # roles = []
-    # for result in query_results:
-    #     item = {
-    #         "id": result[0],
-    #         "title": result[1],
-    #         "salary": result[2],
-    #         "location": result[3],
-    #         "job_type": result[4]
-    #     }
-    #     roles.append(item)
-
     # return roles
     for result in query_results:
         columns = result.keys()
@@ -96,10 +169,15 @@ def fetch_job_openings() -> dict:
     item = [dict(zip(columns, row)) for row in query_results]
     return item
 
-def fetch_job_openings_by_name(company_name: str) -> dict:
+def fetch_job_openings_by_name(student_id: int, company_name: str) -> dict:
     conn = db.connect()
-    query = 'SELECT * FROM Job_Role a join Company b on a.company_id = b.company_id where b.company_name like "{}";'.format(company_name)
-    query_results = conn.execute(query).fetchall()
+    query = '''SELECT a.*, b.company_name, c.student_id,
+           CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
+    FROM Job_Role a
+    LEFT JOIN Company b ON a.company_id = b.company_id
+    LEFT JOIN Applies c ON a.job_id = c.job_id
+    where b.company_name = %(company_name)s'''
+    query_results = conn.execute(query, student_id=student_id, default_status="NA", company_name=company_name).fetchall()
     conn.close()
     roles = []
     # for result in query_results:
@@ -118,9 +196,9 @@ def fetch_job_openings_by_name(company_name: str) -> dict:
     item = [dict(zip(columns, row)) for row in query_results]
     return item
 
-def fetch_jobs_applied(student_id: int) -> dict:
+def fetch_jobs_applied(student_id: int, count: int) -> dict:
     conn = db.connect()
-    query = "select c.*, d.company_name, b.status from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={};".format(student_id)
+    query = "select c.*, d.company_name, b.status from Student a join Applies b on a.student_id = b.student_id join Job_Role c on b.job_id = c.job_id join Company d on c.company_id = d.company_id where a.student_id={} LIMIT 10 OFFSET {};".format(student_id, count)
     query_results = conn.execute(query).fetchall()
     conn.close()
     for result in query_results:
@@ -135,9 +213,9 @@ def apply(student_id: int, job_id: int) -> None:
     conn.execute(query)
     conn.close()
 
-def fetch_company_applications(company_id: int) -> dict:
+def fetch_company_applications(company_id: int, count: int) -> dict:
     conn = db.connect()
-    query = "select c.*, b.*, a.status from Applies a join Job_Role b on a.job_id = b.job_id join Student c on a.student_id = c.student_id where company_id={};".format(company_id)
+    query = "select c.*, b.*, a.status from Applies a join Job_Role b on a.job_id = b.job_id join Student c on a.student_id = c.student_id where company_id={}  LIMIT 10 OFFSET {};".format(company_id, count)
     query_results = conn.execute(query).fetchall()
     conn.close()
     for result in query_results:
@@ -149,5 +227,11 @@ def fetch_company_applications(company_id: int) -> dict:
 def decide(student_id: int, job_id: int, status: str) -> None:
     conn = db.connect()
     query = "update Applies set Status='{}' where job_id={} and student_id={};".format(status, job_id, student_id)
+    conn.execute(query)
+    conn.close()
+
+def close_job(job_id):
+    conn = db.connect()
+    query = "update Job_Role set job_status = 'Closed' where job_id = {};".format(job_id)
     conn.execute(query)
     conn.close()

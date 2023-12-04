@@ -51,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \"job_id\": 98765,\n    \"job_title\": \"Software Developer\",\n    \"salary\": 50000,\n    \"location\": \"Chicago\",\n    \"job_type\": \"Internship\",\n    \"company_id\": 1}",
+							"raw": "{   \"job_title\": \"App Developer\",\n    \"salary\": 50000,\n    \"location\": \"San Jose\",\n    \"job_type\": \"Internship\",\n    \"company_id\": 1,\n    \"skill_names\": [\"Product Development\", \"Computer Networking\"]}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -82,7 +82,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/company/delete/98765",
+							"raw": "http://127.0.0.1:5000/company/delete/11131",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -94,7 +94,7 @@
 							"path": [
 								"company",
 								"delete",
-								"98765"
+								"11131"
 							]
 						}
 					},
@@ -166,6 +166,38 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "close job",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"job_id\": 11129}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/company/close",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"company",
+								"close"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -182,7 +214,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\"student_id\": 1}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -217,7 +249,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"company_name\": \"adidas\"}",
+							"raw": "{   \"student_id\": 1,\n    \"company_name\": \"adidas\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -284,7 +316,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"student_id\" : 1,\n\"job_id\": 6}",
+							"raw": "{\"student_id\" : 1,\n\"job_id\": 11129}",
 							"options": {
 								"raw": {
 									"language": "json"
