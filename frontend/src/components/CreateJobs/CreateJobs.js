@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreateJobs.css"; 
 
+
 const CreateJobs = () => {
   const [jobtitle, setRole] = useState("");
   const [sal, setSal] = useState("");
