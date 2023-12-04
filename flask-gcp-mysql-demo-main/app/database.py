@@ -266,3 +266,26 @@ def fetch_job_by_skills(student_id: int) -> dict:
     
     item = [dict(zip(columns, row)) for row in query_results]
     return item
+
+def fetch_student_by_skills(job_id: int) -> dict:
+    conn = db.connect()
+    query = '''SELECT St.student_id, St.email, St.university_name, St.gpa, T1.status
+            FROM Student St JOIN 
+            (
+                SELECT O.student_id, A.status, COUNT(O.skill_id) AS skill_count
+                FROM Owns O
+                JOIN Applies A ON O.student_id = A.student_id
+                WHERE O.skill_id IN (SELECT R.skill_id FROM Requires R WHERE R.job_id = %(job_id)s)
+                AND A.job_id = 1
+                GROUP BY O.student_id
+            ) T1 ON T1.student_id = St.student_id
+            WHERE T1.skill_count = (
+                SELECT COUNT(*) FROM Requires R WHERE R.job_id = %(job_id)s
+            );'''
+    query_results = conn.execute(query, job_id=job_id).fetchall()
+    conn.close()
+    for result in query_results:
+        columns = result.keys()
+    
+    item = [dict(zip(columns, row)) for row in query_results]
+    return item
