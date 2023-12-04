@@ -175,20 +175,11 @@ def fetch_job_openings_by_name(student_id: int, company_name: str) -> dict:
            CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
     FROM Job_Role a
     LEFT JOIN Company b ON a.company_id = b.company_id
-    LEFT JOIN Applies c ON a.job_id = c.job_id
+    LEFT JOIN Applies c ON a.job_id = c.job_id AND c.student_id = %(student_id)s
     where b.company_name = %(company_name)s'''
     query_results = conn.execute(query, student_id=student_id, default_status="NA", company_name=company_name).fetchall()
     conn.close()
     roles = []
-    # for result in query_results:
-    #     item = {
-    #         "id": result[0],
-    #         "title": result[1],
-    #         "salary": result[2],
-    #         "location": result[3],
-    #         "job_type": result[4]
-    #     }
-    #     roles.append(item)
 
     for result in query_results:
         columns = result.keys()
@@ -235,3 +226,15 @@ def close_job(job_id):
     query = "update Job_Role set job_status = 'Closed' where job_id = {};".format(job_id)
     conn.execute(query)
     conn.close()
+
+def stats(company_id):
+    conn = db.connect()
+    result = db.execute("CALL CalculateRecruiterStats({}, @male_count, @male_percentage, @female_count, @female_percentage, @exp_counts);".format(company_id))
+    query_results = db.execute("SELECT @male_count, @male_percentage, @female_count, @female_percentage, @exp_counts;").fetchone()
+
+    conn.close()
+    for result in query_results:
+        columns = result.keys()
+    
+    item = [dict(zip(columns, row)) for row in query_results]
+    return item

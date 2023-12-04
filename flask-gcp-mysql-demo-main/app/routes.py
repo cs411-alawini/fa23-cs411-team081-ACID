@@ -117,3 +117,12 @@ def close_job():
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
+
+@app.route("/company/stats", methods=['POST']) #Not working
+def stats():
+    data = request.get_json()
+    try:
+        result = db_helper.stats(data["company_id"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
