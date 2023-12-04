@@ -51,10 +51,11 @@ const CreateJobs = () => {
       onSubmit={handleSubmit}
     > */}
     
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="cform">
           <input
             type="text"
             placeholder="Job Title"
+            className="cinput"
             value={jobtitle}
             onChange={(e) => setRole(e.target.value)}
             required
@@ -62,6 +63,7 @@ const CreateJobs = () => {
           <input
             type="number"
             placeholder="Salary"
+            className="cinput"
             value={sal}
             onChange={(e) => setSal(e.target.value)}
             required
@@ -69,6 +71,7 @@ const CreateJobs = () => {
           <input
             type="text"
             placeholder="Location"
+            className="cinput"
             value={loc}
             onChange={(e) => setLoc(e.target.value)}
             required
@@ -76,6 +79,7 @@ const CreateJobs = () => {
           <input
             type="text"
             placeholder="Job Type"
+            className="cinput"
             value={type}
             onChange={(e) => setType(e.target.value)}
             required
@@ -83,6 +87,7 @@ const CreateJobs = () => {
           <input
             type="text"
             placeholder="Skills (comma separated)"
+            className="cinput"
             value={skills}
             onChange={(e) => setType(e.target.value)}
             required
