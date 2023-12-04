@@ -156,7 +156,7 @@ def fetch_job_openings(student_id: int, count: int) -> dict:
            CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
     FROM Job_Role a
     LEFT JOIN Company b ON a.company_id = b.company_id
-    LEFT JOIN Applies c ON a.job_id = c.job_id
+    LEFT JOIN Applies c ON a.job_id = c.job_id AND c.student_id = %(student_id)s
     ORDER BY a.job_id
     LIMIT 10 OFFSET {};
     '''.format(count)
