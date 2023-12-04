@@ -19,6 +19,7 @@ import JobApplicationsPage from "./components/JobApplicationsPage/JobApplication
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
 import CompanyApplicantsPage from "./components/CompanyApplicantsPage copy/CompanyApplicantsPage";
+import CreateJobs from "./components/CreateJobs/CreateJobs";
 
 export const Auth = createContext();
 export const SetAuth = createContext();
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
 	{
 		path: "/companyApplicants",
 		element: <CompanyApplicantsPage />,
+	},
+  {
+		path: "/createJobs",
+		element: <CreateJobs />,
 	},
 ]);
 
