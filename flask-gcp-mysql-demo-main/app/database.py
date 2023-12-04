@@ -243,3 +243,26 @@ def stats(company_id):
     items = dict(zip(columns, result))
 
     return items
+
+def fetch_job_by_skills(student_id: int) -> dict:
+    conn = db.connect()
+    query = '''SELECT J.job_id, J.job_title, J.salary, J.location, J.job_type, C.company_name
+            FROM Job_Role J JOIN (
+                SELECT R.job_id, COUNT(R.skill_id) as skill_count
+                FROM Requires R
+                WHERE R.skill_id IN (
+                    SELECT O.skill_id FROM Owns O WHERE O.student_id = %(student_id)s
+                )
+                GROUP BY R.job_id
+            ) T1 ON T1.job_id = J.job_id
+            JOIN Company C ON C.company_id = J.company_id
+            WHERE T1.skill_count = (
+                    SELECT COUNT(*) FROM Owns O WHERE O.student_id = %(student_id)s
+            );'''
+    query_results = conn.execute(query, student_id=student_id).fetchall()
+    conn.close()
+    for result in query_results:
+        columns = result.keys()
+    
+    item = [dict(zip(columns, row)) for row in query_results]
+    return item

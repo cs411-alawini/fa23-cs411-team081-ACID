@@ -126,3 +126,12 @@ def stats():
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
+
+@app.route("/student/jobs_by_skills", methods=['POST'])
+def fetch_job_by_skills():
+    data = request.get_json()
+    try:
+        result = db_helper.fetch_job_by_skills(data["student_id"])
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return result
