@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import CompanyApplicantsPage from "./components/CompanyApplicantsPage copy/CompanyApplicantsPage";
 import CreateJobs from "./components/CreateJobs/CreateJobs";
 import StudentProfile from "./components/StudentProfile/StudentProfile";
+import ApplicantStats from "./components/ApplicantStats/ApplicantStats";
 
 export const Auth = createContext();
 export const SetAuth = createContext();
@@ -94,6 +95,10 @@ const router = createBrowserRouter([
 	{
 		path: "/studentProfile",
 		element: <StudentProfile />,
+	},
+  {
+		path: "/applicantStats",
+		element: <ApplicantStats />,
 	},
 ]);
 
