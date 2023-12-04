@@ -229,12 +229,17 @@ def close_job(job_id):
 
 def stats(company_id):
     conn = db.connect()
-    result = db.execute("CALL CalculateRecruiterStats({}, @male_count, @male_percentage, @female_count, @female_percentage, @exp_counts);".format(company_id))
-    query_results = db.execute("SELECT @male_count, @male_percentage, @female_count, @female_percentage, @exp_counts;").fetchone()
+    query = f"CALL CalculateRecruiterStats({company_id}, @male_count, @male_percentage, @female_count, @female_percentage, @exp_counts);"
+    conn.execute(query)
 
+    # Retrieve the results
+    result = conn.execute("SELECT @male_count, @male_percentage, @female_count, @female_percentage, @exp_counts;").fetchone()
+
+    # Close the database connection
     conn.close()
-    for result in query_results:
-        columns = result.keys()
-    
-    item = [dict(zip(columns, row)) for row in query_results]
-    return item
+
+    # Process the result and return as JSON
+    columns = result.keys()
+    items = dict(zip(columns, result))
+
+    return items
