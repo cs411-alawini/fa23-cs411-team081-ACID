@@ -25,8 +25,8 @@ function CompanyApplicantsPage() {
 	const _UserType = useContext(UserType);
 	const [response, setResponse] = useState([]);
 	const [count, setCount] = useState(0);
-	console.log("UserId", _UserId);
-	console.log("companyId", _CompanyId);
+	// console.log("UserId", _UserId);
+	// console.log("companyId", _CompanyId);
 
 	const [searchInput, setSearchInput] = useState("");
 
@@ -36,7 +36,7 @@ function CompanyApplicantsPage() {
 			count: count,
 		});
 		setResponse(response);
-		console.log("Fetching", response);
+		// console.log("Fetching", response);
 	};
 
 	const IncrementCount = () => {

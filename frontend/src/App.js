@@ -35,7 +35,9 @@ export const CompanyId = createContext();
 export const SetCompanyId = createContext();
 
 toast.configure();
+// require("dotenv").config();
 function App() {
+	// console.log(process.env.REACT_APP_API_BASE_URL);
 	const [auth, setauth] = useState(false);
 	const [userId, setUserId] = useState(-1);
 	const [companyId, setCompanyId] = useState(-1);

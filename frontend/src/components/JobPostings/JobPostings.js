@@ -24,7 +24,7 @@ function JobPostings() {
 	const _UserType = useContext(UserType);
 	const [response, setResponse] = useState([]);
 	const [count, setCount] = useState(0);
-	console.log("UserId", _UserId);
+	// console.log("UserId", _UserId);
 
 	const [searchInput, setSearchInput] = useState("");
 
@@ -33,7 +33,7 @@ function JobPostings() {
 			company_id: _CompanyId,
 			count: count,
 		});
-		console.log("boom", response);
+		// console.log("boom", response);
 		setResponse(response);
 	};
 

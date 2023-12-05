@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseURL = "http://127.0.0.1:5000/";
+export const baseURL = process.env.REACT_APP_API_BASE_URL;
 export const student_login = "student/login";
 export const recruiter_login = "recruiter/login";
 export const all_job_postings = "student/job_openings";
@@ -18,7 +18,7 @@ export const delete_job = "/company/delete";
 export const job_postings = "/company/postings";
 
 export const api = axios.create({
-	baseURL: "http://127.0.0.1:5000/",
+	baseURL: baseURL,
 });
 
 export const apiStudentLogin = async (credentials) => {
@@ -66,7 +66,7 @@ export const apiStudentAllJobPostings = async (params) => {
 };
 
 export const apiStudentApplyJob = async (params) => {
-	console.log("Params", params);
+	// console.log("Params", params);
 	try {
 		const response = await api.post(`${student_apply_job}`, {
 			student_id: params.student_id,
@@ -181,7 +181,7 @@ export const apiCreateJob = async (params) => {
 			company_id: params.company_id,
 			skill_names: params.skill_names,
 		});
-		console.log(response);
+		// console.log(response);
 		return response.data;
 	} catch (error) {
 		return error.response.data;
@@ -205,7 +205,7 @@ export const apiGetJobPostings = async (params) => {
 			company_id: params.company_id,
 			count: params.count,
 		});
-		console.log(response);
+		// console.log(response);
 		return response.data;
 	} catch (error) {
 		return error.response.data;

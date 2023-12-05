@@ -11,12 +11,12 @@ function ApplyButton({ props }) {
 	const _UserId = useContext(UserId);
 
 	const handleClick = async (e) => {
-		console.log(props.student_id, props.job_id);
+		// console.log(props.student_id, props.job_id);
 		const response = await apiStudentApplyJob({
 			student_id: _UserId,
 			job_id: props.job_id,
 		});
-		console.log(response);
+		// console.log(response);
 		if (response.success === true) {
 			setStyle("bg-yellow-200 px-4 py-2 rounded-xl w-full");
 			setText("Pending");

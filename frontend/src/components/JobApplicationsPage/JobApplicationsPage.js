@@ -18,7 +18,7 @@ function JobApplicationsPage() {
 	const auth = useContext(Auth);
 	const [response, setResponse] = useState([]);
 	const [count, setCount] = useState(0);
-	console.log("UserId", _UserId);
+	// console.log("UserId", _UserId);
 
 	const [searchInput, setSearchInput] = useState("");
 
@@ -27,7 +27,7 @@ function JobApplicationsPage() {
 			student_id: _UserId,
 			count: count,
 		});
-		console.log(response);
+		// console.log(response);
 		setResponse(response);
 	};
 

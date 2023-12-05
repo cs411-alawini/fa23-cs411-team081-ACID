@@ -10,13 +10,13 @@ import ApplyButton from "../ApplyButton/ApplyButton";
 
 function ApplicantCard({ props }) {
 	useEffect(() => {
-		console.log(props);
+		// console.log(props);
 	}, []);
 
 	const [statusChange, setStatusChange] = useState("");
 
 	const handleAccept = async (e) => {
-		console.log(props.student_id, props.job_id);
+		// console.log(props.student_id, props.job_id);
 		const response = await apiDecideApplicantStatus({
 			student_id: props.student_id,
 			job_id: props.job_id,
@@ -37,7 +37,7 @@ function ApplicantCard({ props }) {
 		}
 	};
 	const handleReject = async (e) => {
-		console.log(props.student_id, props.job_id);
+		// console.log(props.student_id, props.job_id);
 		const response = await apiDecideApplicantStatus({
 			student_id: props.student_id,
 			job_id: props.job_id,

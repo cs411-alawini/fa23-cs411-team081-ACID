@@ -15,7 +15,7 @@ const CreateJobs = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		console.log("CompanyID", _CompanyId);
+		// console.log("CompanyID", _CompanyId);
 		// if (_CompanyId === -1) {
 		// 	navigate("/");
 		// }
@@ -31,7 +31,7 @@ const CreateJobs = () => {
 			company_id: _CompanyId,
 			skill_names: skills,
 		});
-		console.log(response);
+		// console.log(response);
 		if (response.success === true) {
 			toast.success("Job Create Successful", {
 				position: "bottom-center",

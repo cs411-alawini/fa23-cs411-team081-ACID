@@ -23,9 +23,9 @@ const ApplicantStats = () => {
 		const response = await apiGetStats({
 			company_id: _CompanyId,
 		});
-		console.log(response);
+		// console.log(response);
 		setBuckets(response["@buckets"]);
-		console.log("GETIT", buckets);
+		// console.log("GETIT", buckets);
 		setResponse(response);
 	};
 

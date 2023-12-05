@@ -18,7 +18,7 @@ function JobOpeningsPage() {
 	const _UserType = useContext(UserType);
 	const [response, setResponse] = useState([]);
 	const [count, setCount] = useState(0);
-	console.log("UserId", _UserId);
+	// console.log("UserId", _UserId);
 
 	const [searchInput, setSearchInput] = useState("");
 
