@@ -101,14 +101,8 @@ def post_job(title: str, salary: int, location: str, job_type: str, company_id: 
     try:
         print(title, salary, location, job_type, company_id, skill_names)
         conn = db.connect()
-        cursor = conn.connection.cursor()    
+        cursor = conn.connection.cursor()   
 
-        cursor.execute("SELECT MAX(job_id) FROM Job_Role;")   
-        job_id = cursor.fetchone()[0] + 1 
-        query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s, %s);'
-        values = (job_id, title, salary, location, job_type, company_id, "Open")
-
-        conn.execute(query, values)
         # Fetch skill IDs for the given skill names
         skill_names = skill_names.split(',')
         skill_ids = []
@@ -118,6 +112,15 @@ def post_job(title: str, salary: int, location: str, job_type: str, company_id: 
             result = cursor.fetchone()
             if result:
                 skill_ids.append(result[0])
+            else:
+                raise Exception("Skill ID does not exists")
+        print(skill_ids)
+        cursor.execute("SELECT MAX(job_id) FROM Job_Role;")   
+        job_id = cursor.fetchone()[0] + 1 
+        query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s, %s);'
+        values = (job_id, title, salary, location, job_type, company_id, "Open")
+
+        conn.execute(query, values)
         
         # Insert into Requires table
         for skill_id in skill_ids:

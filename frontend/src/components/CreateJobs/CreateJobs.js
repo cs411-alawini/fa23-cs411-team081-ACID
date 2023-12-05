@@ -3,6 +3,7 @@ import "./CreateJobs.css";
 import { CompanyId } from "../../App";
 import { apiCreateJob } from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const CreateJobs = () => {
 	const [jobtitle, setRole] = useState("");
@@ -14,12 +15,14 @@ const CreateJobs = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (_CompanyId === -1) {
-			navigate("/");
-		}
+		console.log("CompanyID", _CompanyId);
+		// if (_CompanyId === -1) {
+		// 	navigate("/");
+		// }
 	});
 
 	const handleSubmit = async (e) => {
+		e.preventDefault();
 		const response = await apiCreateJob({
 			job_title: jobtitle,
 			salary: sal,
@@ -29,11 +32,22 @@ const CreateJobs = () => {
 			skill_names: skills,
 		});
 		console.log(response);
-		setRole("");
-		setSal("");
-		setLoc("");
-		setType("");
-		setSkills("");
+		if (response.success === true) {
+			toast.success("Job Create Successful", {
+				position: "bottom-center",
+				theme: "colored",
+			});
+			setRole("");
+			setSal("");
+			setLoc("");
+			setType("");
+			setSkills("");
+		} else {
+			toast.error("Job Create Failed", {
+				position: "bottom-center",
+				theme: "colored",
+			});
+		}
 	};
 
 	return (

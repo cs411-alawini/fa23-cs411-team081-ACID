@@ -139,9 +139,7 @@ function JobOpeningsPage() {
 			<div className="flex flex-col p-4 items-center justify-center min-w-full">
 				<Suspense fallback={<div>Loading...</div>}>
 					{response.map((item, index) => (
-						<button>
-							<JobCard key={index + 1} props={item}></JobCard>
-						</button>
+						<JobCard key={index + 1} props={item}></JobCard>
 					))}
 				</Suspense>
 				{searchInput === "" && (

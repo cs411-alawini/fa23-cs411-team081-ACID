@@ -174,13 +174,14 @@ export const apiCloseJobs = async (params) => {
 export const apiCreateJob = async (params) => {
 	try {
 		const response = await api.post(`${create_job}`, {
-			job_title: params.job_id,
+			job_title: params.job_title,
 			salary: params.salary,
 			location: params.location,
 			job_type: params.job_type,
 			company_id: params.company_id,
 			skill_names: params.skill_names,
 		});
+		console.log(response);
 		return response.data;
 	} catch (error) {
 		return error.response.data;
