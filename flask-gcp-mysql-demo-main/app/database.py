@@ -96,22 +96,24 @@ def fetch_job_postings(company_id: int, count: int) -> dict:
 #     conn.close()
 
 
-def post_job(title: str, salary: int, location: str, job_type: str, company_id: int, skill_names: []):
+def post_job(title: str, salary: int, location: str, job_type: str, company_id: int, skill_names: str) -> dict:
 
     try:
+        print(title, salary, location, job_type, company_id, skill_names)
         conn = db.connect()
         cursor = conn.connection.cursor()    
 
         cursor.execute("SELECT MAX(job_id) FROM Job_Role;")   
         job_id = cursor.fetchone()[0] + 1 
-
         query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s, %s);'
         values = (job_id, title, salary, location, job_type, company_id, "Open")
 
         conn.execute(query, values)
         # Fetch skill IDs for the given skill names
+        skill_names = skill_names.split(',')
         skill_ids = []
         for skill_name in skill_names:
+            skill_name = skill_name.strip()
             cursor.execute("SELECT skill_id FROM Skill WHERE skill_name = %s limit 1", (skill_name,))
             result = cursor.fetchone()
             if result:
