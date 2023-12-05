@@ -18,9 +18,12 @@ import JobOpeningsPage from "./components/JobOpeningsPage/JobOpeningsPage";
 import JobApplicationsPage from "./components/JobApplicationsPage/JobApplicationsPage";
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
-import CompanyApplicantsPage from "./components/CompanyApplicantsPage copy/CompanyApplicantsPage";
+import CompanyApplicantsPage from "./components/CompanyApplicantsPage/CompanyApplicantsPage";
 import CreateJobs from "./components/CreateJobs/CreateJobs";
 import StudentProfile from "./components/StudentProfile/StudentProfile";
+import ApplicantStats from "./components/ApplicantStats/ApplicantStats";
+import JobPostings from "./components/JobPostings/JobPostings";
+import JobSkillMatchPage from "./components/JobSkillMatchPage/JobSkillMatchPage";
 
 export const Auth = createContext();
 export const SetAuth = createContext();
@@ -87,7 +90,7 @@ const router = createBrowserRouter([
 		path: "/companyApplicants",
 		element: <CompanyApplicantsPage />,
 	},
-  {
+	{
 		path: "/createJobs",
 		element: <CreateJobs />,
 	},
@@ -95,6 +98,15 @@ const router = createBrowserRouter([
 		path: "/studentProfile",
 		element: <StudentProfile />,
 	},
+	{
+		path: "/applicantStats",
+		element: <ApplicantStats />,
+	},
+	{
+		path: "/jobPostings",
+		element: <JobPostings />,
+	},
+	{ path: "/skillMatch", element: <JobSkillMatchPage /> },
 ]);
 
 if (import.meta.hot) {

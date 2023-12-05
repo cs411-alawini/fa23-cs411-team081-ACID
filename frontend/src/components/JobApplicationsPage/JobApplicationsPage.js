@@ -31,6 +31,11 @@ function JobApplicationsPage() {
 		setResponse(response);
 	};
 
+	const handleSkillMatch = (e) => {
+		e.preventDefault();
+		navigate("/skillMatch");
+	};
+
 	const IncrementCount = () => {
 		setCount(count + 10);
 	};
@@ -73,6 +78,12 @@ function JobApplicationsPage() {
 						className="border-2 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
 					>
 						Job Openings
+					</button>
+					<button
+						onClick={handleSkillMatch}
+						className="border-2 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
+					>
+						Skill Match
 					</button>
 					<button
 						onClick={handleLogOut}

@@ -1,5 +1,6 @@
 """Defines all the functions related to the database"""
 from app import db
+import json
 
 def student_login(student_id: int, pwd: str) -> dict:
 
@@ -42,10 +43,10 @@ def recruiter_login(recruiter_id: int, pwd: str) -> dict:
     return item
 
 
-def fetch_job_postings(company_id: int) -> dict:
+def fetch_job_postings(company_id: int, count: int) -> dict:
 
     conn = db.connect()
-    query_results = conn.execute("Select * from Job_Role where company_id={};".format(company_id)).fetchall()
+    query_results = conn.execute("Select * from Job_Role where company_id={} LIMIT 10 OFFSET {};".format(company_id, count)).fetchall()
     conn.close()
     roles = []
     for result in query_results:
@@ -95,7 +96,7 @@ def fetch_job_postings(company_id: int) -> dict:
 #     conn.close()
 
 
-def post_job(title: str, salary: int, location: str, type: str, company_id: int, skill_names: []) ->  None:
+def post_job(title: str, salary: int, location: str, _type: str, company_id: int, skill_names: []) ->  dict:
     
     # conn = db.connect()
     # query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
@@ -116,10 +117,10 @@ def post_job(title: str, salary: int, location: str, type: str, company_id: int,
         job_id = cursor.fetchone()[0] + 1 
 
         query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s);'
-        values = (job_id, title, salary, location, type, company_id)
+        values = (job_id, title, salary, location, _type, company_id)
 
         conn.execute(query, values)
-
+        print("boom")
         # Fetch skill IDs for the given skill names
         skill_ids = []
         for skill_name in skill_names:
@@ -243,7 +244,31 @@ def stats(company_id):
     # Process the result and return as JSON
     columns = result.keys()
     items = dict(zip(columns, result))
+    items["@exp_counts"] = json.loads(items["@exp_counts"])
 
+    buckets = [0] * 5
+
+    # Categorize the data into buckets based on years_of_exp
+    for item in items["@exp_counts"]:
+        exp = int(item["years_of_exp"])
+        if exp <= 1:
+            buckets[0] += item["count"]
+        elif 2 <= exp <= 4:
+            buckets[1] += item["count"]
+        elif 4 < exp <= 6:
+            buckets[2] += item["count"]
+        elif 6 < exp <= 8:
+            buckets[3] += item["count"]
+        else:
+            buckets[4] += item["count"]
+
+    items["@0-1"] = buckets[0]
+    items["@2-4"] = buckets[1]
+    items["@4-6"] = buckets[2]
+    items["@6-8 "] = buckets[3]
+    items["@8+"] = buckets[4]
+    items['@female_percentage'] = int(items['@female_percentage'])
+    items['@male_percentage'] = int(items['@male_percentage'])
     return items
 
 def fetch_job_by_skills(student_id: int) -> dict:

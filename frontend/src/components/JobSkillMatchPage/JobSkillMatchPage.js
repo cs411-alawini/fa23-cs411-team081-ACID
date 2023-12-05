@@ -8,10 +8,14 @@ import {
 	SetUserType,
 } from "../../App";
 import JobCard from "../JobCard/JobCard";
-import { apiStudentAllJobPostings, apiStudentFetchByName } from "../../api/api";
+import {
+	apiGetJobsBySkills,
+	apiStudentAllJobPostings,
+	apiStudentFetchByName,
+} from "../../api/api";
 import { useNavigate } from "react-router-dom";
 
-function JobOpeningsPage() {
+function JobSkillMatchPage() {
 	const _UserId = useContext(UserId);
 	const auth = useContext(Auth);
 	const _SetAuth = useContext(SetAuth);
@@ -23,7 +27,7 @@ function JobOpeningsPage() {
 	const [searchInput, setSearchInput] = useState("");
 
 	const fetchJobOpenings = async (e) => {
-		const response = await apiStudentAllJobPostings({
+		const response = await apiGetJobsBySkills({
 			student_id: _UserId,
 			count: count,
 		});
@@ -65,9 +69,9 @@ function JobOpeningsPage() {
 		navigate("/jobApplications");
 	};
 
-	const handleSkillMatch = (e) => {
+	const handleJobOpeningsClick = (e) => {
 		e.preventDefault();
-		navigate("/skillMatch");
+		navigate("/jobOpenings");
 	};
 
 	const handleSearch = async (e) => {
@@ -88,9 +92,9 @@ function JobOpeningsPage() {
 		<div className="bg-white flex flex-col items-center justify-start min-h-screen min-w-full">
 			<div className="bg-violet-900 flex flex-col items-center justify-center min-w-full space-y-4 p-4">
 				<div className="text-white font-bold text-2xl">
-					Active Job Openings
+					Skill Matched Jobs
 				</div>
-				<div>
+				{/* <div>
 					<input
 						className="rounded- w-96"
 						type="text"
@@ -113,7 +117,7 @@ function JobOpeningsPage() {
 							Remove Filter
 						</button>
 					)}
-				</div>
+				</div> */}
 				<div>
 					<button
 						onClick={handleApplicationsClick}
@@ -122,10 +126,10 @@ function JobOpeningsPage() {
 						Applications
 					</button>
 					<button
-						onClick={handleSkillMatch}
+						onClick={handleJobOpeningsClick}
 						className="border-2 ml-4 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
 					>
-						Skill Match
+						Job Openings
 					</button>
 					<button
 						onClick={handleLogOut}
@@ -139,9 +143,7 @@ function JobOpeningsPage() {
 			<div className="flex flex-col p-4 items-center justify-center min-w-full">
 				<Suspense fallback={<div>Loading...</div>}>
 					{response.map((item, index) => (
-						<button>
-							<JobCard key={index + 1} props={item}></JobCard>
-						</button>
+						<JobCard key={index + 1} props={item}></JobCard>
 					))}
 				</Suspense>
 				{searchInput === "" && (
@@ -165,4 +167,4 @@ function JobOpeningsPage() {
 	);
 }
 
-export default JobOpeningsPage;
+export default JobSkillMatchPage;
