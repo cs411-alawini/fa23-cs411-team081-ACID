@@ -96,18 +96,7 @@ def fetch_job_postings(company_id: int, count: int) -> dict:
 #     conn.close()
 
 
-def post_job(title: str, salary: int, location: str, _type: str, company_id: int, skill_names: []) ->  dict:
-    
-    # conn = db.connect()
-    # query = 'Insert Into Job_Role VALUES ((SELECT MAX( job_id )+1 FROM Job_Role j), "{}", "{}", "{}", "{}", "{}");'.format(
-    #     title, salary, location, type, company_id)
-    # conn.execute(query)
-    # query_results = conn.execute("Select LAST_INSERT_ID();")
-    # query_results = [x for x in query_results]
-    # task_id = query_results[0][0]
-    # conn.close()
-
-    # return task_id
+def post_job(title: str, salary: int, location: str, job_type: str, company_id: int, skill_names: []):
 
     try:
         conn = db.connect()
@@ -116,11 +105,10 @@ def post_job(title: str, salary: int, location: str, _type: str, company_id: int
         cursor.execute("SELECT MAX(job_id) FROM Job_Role;")   
         job_id = cursor.fetchone()[0] + 1 
 
-        query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s);'
-        values = (job_id, title, salary, location, _type, company_id)
+        query = 'INSERT INTO Job_Role VALUES (%s, %s, %s, %s, %s, %s, %s);'
+        values = (job_id, title, salary, location, job_type, company_id, "Open")
 
         conn.execute(query, values)
-        print("boom")
         # Fetch skill IDs for the given skill names
         skill_ids = []
         for skill_name in skill_names:
@@ -129,16 +117,14 @@ def post_job(title: str, salary: int, location: str, _type: str, company_id: int
             if result:
                 skill_ids.append(result[0])
         
-        print(skill_ids)
-
         # Insert into Requires table
         for skill_id in skill_ids:
-            print(job_id)
-            print(skill_id)
-            
             query = 'INSERT INTO Requires (job_id, skill_id) VALUES (%s, %s);'
             values = (job_id, skill_id)
             conn.execute(query, values)
+
+    except Exception as e: 
+        print(e)
 
     finally:
         cursor.close()
