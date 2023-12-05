@@ -170,22 +170,24 @@ def fetch_job_openings(student_id: int, count: int) -> dict:
     return item
 
 def fetch_job_openings_by_name(student_id: int, company_name: str) -> dict:
-    conn = db.connect()
-    query = '''SELECT a.*, b.company_name, c.student_id,
-           CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
-    FROM Job_Role a
-    LEFT JOIN Company b ON a.company_id = b.company_id
-    LEFT JOIN Applies c ON a.job_id = c.job_id AND c.student_id = %(student_id)s
-    where b.company_name = %(company_name)s'''
-    query_results = conn.execute(query, student_id=student_id, default_status="NA", company_name=company_name).fetchall()
-    conn.close()
-    roles = []
-
-    for result in query_results:
-        columns = result.keys()
-    
-    item = [dict(zip(columns, row)) for row in query_results]
-    return item
+    try:
+        conn = db.connect()
+        query = '''SELECT a.*, b.company_name, c.student_id,
+            CASE WHEN c.student_id = %(student_id)s THEN c.status ELSE %(default_status)s END AS status
+        FROM Job_Role a
+        LEFT JOIN Company b ON a.company_id = b.company_id
+        LEFT JOIN Applies c ON a.job_id = c.job_id AND c.student_id = %(student_id)s
+        where b.company_name = %(company_name)s'''
+        query_results = conn.execute(query, student_id=student_id, default_status="NA", company_name=company_name).fetchall()
+        conn.close()
+        for result in query_results:
+            columns = result.keys()
+        
+        item = [dict(zip(columns, row)) for row in query_results]
+        return item
+    except Exception as e: 
+        print(e)
+        return []
 
 def fetch_jobs_applied(student_id: int, count: int) -> dict:
     conn = db.connect()

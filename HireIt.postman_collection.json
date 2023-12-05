@@ -102,15 +102,12 @@
 				},
 				{
 					"name": "fetch applications",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"company_id\": 1}",
+							"raw": "{\"company_id\": 1,\n\"count\": 0}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -198,6 +195,70 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "fetch students by skills",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"job_id\": 1}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/company/students_by_skills",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"company",
+								"students_by_skills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stats",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"company_id\": 1}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/company/stats",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"company",
+								"stats"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -241,15 +302,12 @@
 				},
 				{
 					"name": "fetch jobs by name",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \"student_id\": 1,\n    \"company_name\": \"adidas\"}",
+							"raw": "{   \"student_id\": 1,\n    \"company_name\": \"adidas\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -336,6 +394,38 @@
 							"path": [
 								"student",
 								"apply"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fetch jobs by skills",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"student_id\": 1}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://cs411-project-403502.uc.r.appspot.com/student/jobs_by_skills",
+							"protocol": "https",
+							"host": [
+								"cs411-project-403502",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"student",
+								"jobs_by_skills"
 							]
 						}
 					},

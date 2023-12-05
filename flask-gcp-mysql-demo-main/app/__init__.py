@@ -4,6 +4,8 @@ import sqlalchemy
 from flask import Flask
 from flask_cors import CORS
 from yaml import load, Loader
+from sqlalchemy.engine.url import URL
+
 # from sqlalchemy import URL
 
 
@@ -24,24 +26,38 @@ def init_connection_engine():
         for var in env_variables:
             os.environ[var] = env_variables[var]
 
-    # url_object = URL.create(
-    #     "mysql+pymysql",
-    #     username="root",
-    #     password="cs411",  # plain (unescaped) text
-    #     host="35.239.129.150",
-    #     database="hireit",
-    # )
-    pool = sqlalchemy.create_engine(
-        # url_object
-        sqlalchemy.engine.url.URL(
+        pool = sqlalchemy.create_engine(
+            # url_object
+            sqlalchemy.engine.url.URL(
+                drivername="mysql+pymysql",
+                username=os.environ.get('MYSQL_USER'),
+                password=os.environ.get('MYSQL_PASSWORD'),
+                database=os.environ.get('MYSQL_DB'),
+                host=os.environ.get('MYSQL_HOST'),
+                port=os.environ.get('MYSQL_PORT'),
+            )
+        )
+        
+    else:
+        PROJECT_ID = 'cs411-project-403502'
+        REGION = 'us-central1'
+        INSTANCE_ID = 'cs411'
+
+        # Format the instance connection name
+        INSTANCE_CONNECTION_NAME = f'{PROJECT_ID}:{REGION}:{INSTANCE_ID}'
+
+        # Construct the SQLAlchemy URL with the instance connection name
+        db_url = URL.create(
             drivername="mysql+pymysql",
             username=os.environ.get('MYSQL_USER'),
             password=os.environ.get('MYSQL_PASSWORD'),
             database=os.environ.get('MYSQL_DB'),
-            host=os.environ.get('MYSQL_HOST'),
-            port=os.environ.get('MYSQL_PORT'),
+            query={
+                'unix_socket': f'/cloudsql/{INSTANCE_CONNECTION_NAME}',
+            }
         )
-    )
+
+        pool = sqlalchemy.create_engine(db_url)
 
     return pool
 
