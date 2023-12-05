@@ -3,10 +3,11 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 
-@app.route("/company/delete/<int:job_id>", methods=['POST'])
-def delete_job_posting(job_id):
+@app.route("/company/delete", methods=['POST'])
+def delete_job_posting():
+    data = request.get_json()
     try:
-        db_helper.delete_job_posting(job_id)
+        db_helper.delete_job_posting(data['job_id'])
         result = {'success': True, 'response': 'Removed job_role'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
@@ -24,11 +25,11 @@ def post_job():
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
-@app.route("/company/postings")
+@app.route("/company/postings", methods=['POST'])
 def fetch_job_postings():
     data = request.get_json()
-    items = db_helper.fetch_job_postings(data["company_id"])
-    return render_template("index.html", items=items)
+    items = db_helper.fetch_job_postings(data["company_id"], data["count"])
+    return jsonify(items)
 
 @app.route("/recruiter/login", methods=['POST'])
 def recruiter_login():

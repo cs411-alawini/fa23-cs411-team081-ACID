@@ -8,35 +8,33 @@ import {
 	SetUserType,
 	CompanyId,
 } from "../../App";
-import JobCard from "../JobCard/JobCard";
+import JobCardCompany from "../JobCardCompany/JobCardCompany";
 import {
-	apiCompanyApplicants,
+	apiGetJobPostings,
 	apiStudentAllJobPostings,
 	apiStudentFetchByName,
 } from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import ApplicantCard from "../ApplicantCard/ApplicantCard";
 
-function CompanyApplicantsPage() {
+function JobPostings() {
 	const _UserId = useContext(UserId);
-	const _CompanyId = useContext(CompanyId);
 	const auth = useContext(Auth);
 	const _SetAuth = useContext(SetAuth);
+	const _CompanyId = useContext(CompanyId);
 	const _UserType = useContext(UserType);
 	const [response, setResponse] = useState([]);
 	const [count, setCount] = useState(0);
 	console.log("UserId", _UserId);
-	console.log("companyId", _CompanyId);
 
 	const [searchInput, setSearchInput] = useState("");
 
-	const fetchApplicants = async (e) => {
-		const response = await apiCompanyApplicants({
+	const fetchJobPostings = async (e) => {
+		const response = await apiGetJobPostings({
 			company_id: _CompanyId,
 			count: count,
 		});
+		console.log("boom", response);
 		setResponse(response);
-		console.log("Fetching", response);
 	};
 
 	const IncrementCount = () => {
@@ -50,16 +48,16 @@ function CompanyApplicantsPage() {
 	};
 
 	useEffect(() => {
-		if (auth === false) {
+		if (auth === false || _CompanyId == -1) {
 			navigate("/");
 		}
-		fetchApplicants();
+		fetchJobPostings();
 	}, [count]);
 
-	const handleChange = (e) => {
-		e.preventDefault();
-		setSearchInput(e.target.value);
-	};
+	// const handleChange = (e) => {
+	// 	e.preventDefault();
+	// 	setSearchInput(e.target.value);
+	// };
 
 	const handleLogOut = (e) => {
 		e.preventDefault();
@@ -69,30 +67,36 @@ function CompanyApplicantsPage() {
 
 	const navigate = useNavigate();
 
-	const handleApplicationsClick = (e) => {
-		e.preventDefault();
-		navigate("/jobApplications");
-	};
-
-	// const handleSearch = async (e) => {
-	// 	const response = await apiStudentFetchByName({
-	// 		company_name: searchInput,
-	// 		student_id: _UserId,
-	// 	});
-	// 	setResponse(response);
+	// const handleApplicationsClick = (e) => {
+	// 	e.preventDefault();
+	// 	navigate("/jobApplications");
 	// };
 
-	const handleRemoveFilter = () => {
-		setSearchInput("");
-		setCount(0);
-		fetchApplicants();
+	const handleCreateJobClick = (e) => {
+		e.preventDefault();
+		navigate("/createJobs");
 	};
+
+	const handleStatisticsClick = (e) => {
+		e.preventDefault();
+		navigate("/applicantStats");
+	};
+	const handleApplicants = (e) => {
+		e.preventDefault();
+		navigate("/companyApplicants");
+	};
+
+	// const handleRemoveFilter = () => {
+	// 	setSearchInput("");
+	// 	setCount(0);
+	// 	fetchJobOpenings();
+	// };
 
 	return (
 		<div className="bg-white flex flex-col items-center justify-start min-h-screen min-w-full">
 			<div className="bg-violet-900 flex flex-col items-center justify-center min-w-full space-y-4 p-4">
 				<div className="text-white font-bold text-2xl">
-					All Applicants
+					Active Job Postings
 				</div>
 				{/* <div>
 					<input
@@ -120,10 +124,22 @@ function CompanyApplicantsPage() {
 				</div> */}
 				<div>
 					<button
-						onClick={handleApplicationsClick}
+						onClick={handleCreateJobClick}
 						className="border-2 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
 					>
 						Create Job
+					</button>
+					<button
+						onClick={handleStatisticsClick}
+						className="border-2 ml-4 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
+					>
+						Statistics
+					</button>
+					<button
+						onClick={handleApplicants}
+						className="border-2 ml-4 border-white text-white px-4 py-2 rounded-md w-1/9 hover:bg-purple-800 hover:text-white"
+					>
+						Applicants
 					</button>
 					<button
 						onClick={handleLogOut}
@@ -137,10 +153,10 @@ function CompanyApplicantsPage() {
 			<div className="flex flex-col p-4 items-center justify-center min-w-full">
 				<Suspense fallback={<div>Loading...</div>}>
 					{response.map((item, index) => (
-						<ApplicantCard
+						<JobCardCompany
 							key={index + 1}
 							props={item}
-						></ApplicantCard>
+						></JobCardCompany>
 					))}
 				</Suspense>
 				{searchInput === "" && (
@@ -164,4 +180,4 @@ function CompanyApplicantsPage() {
 	);
 }
 
-export default CompanyApplicantsPage;
+export default JobPostings;
