@@ -12,10 +12,13 @@
   }
   
   .dataCard {
+    display: flex;
+    flex-direction: column;
     background-color: #efefef;
+    align-items: center;
     border-radius: 0.5em;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    padding: 1em;
+    padding: 2em;
   }
   
   .revenueCard {

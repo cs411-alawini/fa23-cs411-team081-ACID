@@ -38,6 +38,7 @@ const ApplicantStats = () => {
 			</div>
 			<div className="App">
 				<div className="dataCard customerCard">
+					<div>Work Experience Distribution</div>
 					<Bar
 						data={{
 							labels: ["0-1", "2-4", "4-6", "6-8", "8+"],
@@ -89,6 +90,7 @@ const ApplicantStats = () => {
 				</div>
 
 				<div className="dataCard categoryCard">
+					<div>Gender Distribution</div>
 					<Doughnut
 						data={{
 							labels: ["Male", "Female"],
